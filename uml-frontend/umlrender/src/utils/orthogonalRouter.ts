@@ -1,5 +1,5 @@
 import { Direction } from "@meta2d/core";
-export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, linkView: import("@meta2d/core").Pen) {
+export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, linkView: import("@meta2d/core").Pen, mouseDown: import("@meta2d/core").Point) {
     console.log("orthogonalRouter");
     console.log(linkView);
     var sourceBBox = store.pens[linkView.anchors[0].connectTo];
@@ -26,18 +26,23 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     let sourceSide;
     console.log(sourceBBox.x, sourceBBox.y);
     console.log(sourceCoordinates.x, sourceCoordinates.y);
-    if (sourceBBox.y === sourceCoordinates.y) {
+
+    if (sourceCoordinates.x >= sourceBBox.x + 125 && sourceCoordinates.x <= sourceBBox.x + 145
+        && sourceCoordinates.y >= sourceBBox.y - 10 && sourceCoordinates.y <= sourceBBox.y + 10) {
         // sourceCoordinates.y = sy0 - spacing;
         sourceSide = Direction.Up;
-    } else if (sourceBBox.y + sourceBBox.height === sourceCoordinates.y) {
+    } else if (sourceCoordinates.x >= sourceBBox.x + 125 && sourceCoordinates.x <= sourceBBox.x + 145) {
         // sourceCoordinates.y = sy0 + sourceBBox.height + spacing;
         sourceSide = Direction.Bottom;
-    } else if (sourceBBox.x === sourceCoordinates.x) {
+    } else if (sourceCoordinates.x >= sourceBBox.x - 10 && sourceCoordinates.x <= sourceBBox.x + 10) {
         // sourceCoordinates.x = sx0 - spacing;
         sourceSide = Direction.Left;
-    } else if (sourceBBox.x + sourceBBox.width === sourceCoordinates.x) {
+    } else if (sourceCoordinates.x >= sourceBBox.x + sourceBBox.width - 10 && sourceCoordinates.x <= sourceBBox.x + sourceBBox.width + 10) {
         // sourceCoordinates.x = sx0 + sourceBBox.width + spacing;
         sourceSide = Direction.Right;
+    }
+    else {
+        sourceSide = Direction.Up;
     }
     console.log(sourceSide);
 
@@ -60,14 +65,18 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     let targetSide;
     console.log(targetBBox.x, targetBBox.y);
     console.log(targetCoordinates.x, targetCoordinates.y);
-    if (targetBBox.y === targetCoordinates.y) {
+    if (targetCoordinates.x >= targetBBox.x + 125 && targetCoordinates.x <= targetBBox.x + 145
+        && targetCoordinates.y >= targetBBox.y - 10 && targetCoordinates.y <= targetBBox.y + 10) {
         targetSide = Direction.Up;
-    } else if (targetBBox.y + targetBBox.height === targetCoordinates.y) {
+    } else if (targetCoordinates.x >= targetBBox.x + 125 && targetCoordinates.x <= targetBBox.x + 145) {
         targetSide = Direction.Bottom;
-    } else if (targetBBox.x === targetCoordinates.x) {
+    } else if (targetCoordinates.x >= targetBBox.x - 10 && targetCoordinates.x <= targetBBox.x + 10) {
         targetSide = Direction.Left;
-    } else if (targetBBox.x + targetBBox.width === targetCoordinates.x) {
+    } else if (targetCoordinates.x >= targetBBox.x + targetBBox.width - 10 && targetCoordinates.x <= targetBBox.x + targetBBox.width + 10) {
         targetSide = Direction.Right;
+    }
+    else {
+        targetSide = Direction.Up;
     }
     console.log(targetSide);
 
@@ -114,11 +123,14 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                     y = ty1 + spacing;
                 }
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            // return [
+
+            linkView.calculative.worldAnchors.push(target);// return [
             //     { x: sox, y: soy },
             //     { x: sox, y },
             //     { x: tox, y },
@@ -127,9 +139,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
             return;
         } else {
             const x = (sox + tox) / 2;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x, y: soy },
             //     { x, y: toy }
@@ -147,11 +162,14 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                     y = ty1 + spacing;
                 }
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x: sox, y },
@@ -160,9 +178,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
             // ];
         } else {
             const x = (sox + tox) / 2;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x, y: soy },
             //     { x, y: toy }
@@ -180,11 +201,14 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                     x = tx1 + spacing;
                 }
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x, y: soy },
@@ -193,9 +217,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
             // ];
         }
         const y = (soy + toy) / 2;
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y },
         //     { x: tox, y }
@@ -212,11 +239,14 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                     x = tx1 + spacing;
                 }
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x, y: soy },
@@ -225,9 +255,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
             // ];
         }
         const y = (soy + toy) / 2;
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y },
         //     { x: tox, y }
@@ -236,8 +269,10 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
         console.log("s:up t:up");
         const y = Math.min(soy, toy);
         linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
+
         linkView.calculative.worldAnchors.push(target);
         return;
         // return [
@@ -247,9 +282,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     } else if (sourceSide === Direction.Bottom && targetSide === Direction.Bottom) {
         console.log("s:bottom t:bottom");
         const y = Math.max(soy, toy);
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y },
         //     { x: tox, y }
@@ -257,8 +295,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     } else if (sourceSide === Direction.Left && targetSide === Direction.Left) {
         console.log("s:left t:left");
         const x = Math.min(sox, tox);
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
+
+        linkView.calculative.worldAnchors.push(target);
         return;
         // return [
         //     { x, y: soy },
@@ -267,9 +309,12 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     } else if (sourceSide === Direction.Right && targetSide === Direction.Right) {
         console.log("s:right t:right");
         const x = Math.max(sox, tox);
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x, y: soy },
         //     { x, y: toy }
@@ -282,38 +327,50 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (y > tcy && y < ty1 + spacing && sox < tx0 - spacing) {
                     y = ty0 - spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: sox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x: sox, y },
                 //     { x: tox, y },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [{ x: sox, y: toy }];
         }
         const x = (sx0 + tox) / 2;
         if (x > sx0 - spacing && soy < ty1) {
             const y = Math.min(sy0, ty0) - spacing;
             const x = Math.max(sx1, tx1) + spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y },
             //     { x, y },
             //     { x, y: toy }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: x, y: soy },
@@ -327,38 +384,50 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (y > tcy && y < ty1 + spacing && sox > tx1 + spacing) {
                     y = ty0 - spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: sox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x: sox, y },
                 //     { x: tox, y },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [{ x: sox, y: toy }];
         }
         const x = (sx1 + tox) / 2;
         if (x < sx1 + spacing && soy < ty1) {
             const y = Math.min(sy0, ty0) - spacing;
             const x = Math.min(sx0, tx0) - spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y },
             //     { x, y },
             //     { x, y: toy }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: x, y: soy },
@@ -372,20 +441,26 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (y < tcy && y > ty0 - spacing && sox < tx0 - spacing) {
                     y = ty1 + spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: sox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x: sox, y },
                 //     { x: tox, y },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: sox, y: toy });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x: sox, y: toy },
@@ -396,21 +471,27 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
         if (x > sx0 - spacing && sy1 > toy) {
             const y = Math.max(sy1, ty1) + spacing;
             const x = Math.max(sx1, tx1) + spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y },
             //     { x, y },
             //     { x, y: toy }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: x, y: soy },
@@ -425,20 +506,26 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (y < tcy && y > ty0 - spacing && sox > tx1 + spacing) {
                     y = ty1 + spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: sox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: y });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x: sox, y },
                 //     { x: tox, y },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: sox, y: toy });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x: sox, y: toy },
@@ -449,21 +536,27 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
         if (x < sx1 + spacing && sy1 > toy) {
             const y = Math.max(sy1, ty1) + spacing;
             const x = Math.min(sx0, tx0) - spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: x, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y },
             //     { x, y },
             //     { x, y: toy }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: soy });
         linkView.calculative.worldAnchors.push({ x: x, y: toy });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: x, y: soy },
@@ -478,39 +571,51 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (x > tcx && x < tx1 + spacing && soy < ty0 - spacing) {
                     x = Math.max(sx1, tx1) + spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: x, y: soy });
                 linkView.calculative.worldAnchors.push({ x: x, y: toy });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 //    return [
                 //         { x, y: soy },
                 //         { x, y: toy },
                 //         { x: tox, y: toy }
                 //     ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [{ x: tox, y: soy }];
         }
         const y = (sy0 + ty1) / 2;
         if (y > sy0 - spacing) {
             const x = Math.min(sx0, tx0) - spacing;
             const y = Math.max(sy1, ty1) + spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x, y: soy },
             //     { x, y },
             //     { x: tox, y }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: sox, y: y },
@@ -526,39 +631,51 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (x > tcx && x < tx1 + spacing && soy > ty1 + spacing) {
                     x = Math.max(sx1, tx1) + spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: x, y: soy });
                 linkView.calculative.worldAnchors.push({ x: x, y: toy });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x, y: soy },
                 //     { x, y: toy },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: tox, y: soy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [{ x: tox, y: soy }];
         }
         const y = (sy1 + ty0) / 2;
         if (y < sy1 + spacing) {
             const x = Math.min(sx0, tx0) - spacing;
             const y = Math.min(sy0, ty0) - spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x, y: soy },
             //     { x, y },
             //     { x: tox, y }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: sox, y: y },
@@ -574,39 +691,51 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (x < tcx && x > tx0 - spacing && soy > ty1 + spacing) {
                     x = Math.max(sx1, tx1) + spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: x, y: soy });
                 linkView.calculative.worldAnchors.push({ x: x, y: toy });
                 linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x, y: soy },
                 //     { x, y: toy },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: tox, y: soy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [{ x: tox, y: soy }];
         }
         const y = (sy1 + ty0) / 2;
         if (y < sy1 + spacing) {
             const x = Math.max(sx1, tx1) + spacing;
             const y = Math.min(sy0, ty0) - spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x, y: soy },
             //     { x, y },
             //     { x: tox, y }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: sox, y: y },
@@ -622,20 +751,26 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
                 if (x < tcx && x > tx0 - spacing && soy < ty0 - spacing) {
                     x = Math.min(sx0, tx0) - spacing;
                 }
+                linkView.calculative.worldAnchors.push(source);
+
                 linkView.calculative.worldAnchors.push({ x: x, y: soy });
                 linkView.calculative.worldAnchors.push({ x: x, y: toy });
                 linkView.calculative.worldAnchors.push({ x: tox, y: soy });
-                return;
+
+                linkView.calculative.worldAnchors.push(target); return;
                 // return [
                 //     { x, y: soy },
                 //     { x, y: toy },
                 //     { x: tox, y: toy }
                 // ];
             }
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: sox, y: soy });
             linkView.calculative.worldAnchors.push({ x: tox, y: soy });
             linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
             // return [
             //     { x: sox, y: soy },
             //     { x: tox, y: soy },
@@ -646,10 +781,13 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
         if (y > sy0 - spacing) {
             const x = Math.max(sx1, tx1) + spacing;
             const y = Math.max(sy1, ty1) + spacing;
+            linkView.calculative.worldAnchors.push(source);
+
             linkView.calculative.worldAnchors.push({ x: x, y: soy });
             linkView.calculative.worldAnchors.push({ x: x, y: y });
             linkView.calculative.worldAnchors.push({ x: tox, y: y });
-            return;
+
+            linkView.calculative.worldAnchors.push(target); return;
 
             // return [
             //     { x, y: soy },
@@ -657,11 +795,14 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
             //     { x: tox, y }
             // ];
         }
+        linkView.calculative.worldAnchors.push(source);
+
         linkView.calculative.worldAnchors.push({ x: sox, y: soy });
         linkView.calculative.worldAnchors.push({ x: sox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: y });
         linkView.calculative.worldAnchors.push({ x: tox, y: toy });
-        return;
+
+        linkView.calculative.worldAnchors.push(target); return;
         // return [
         //     { x: sox, y: soy },
         //     { x: sox, y: y },

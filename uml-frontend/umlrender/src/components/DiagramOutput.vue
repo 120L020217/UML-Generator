@@ -13,6 +13,7 @@ import {
     Direction,
     registerAnchors,
     registerCanvasDraw,
+    EventAction,
 } from '@meta2d/core';
 import { orthogonalRouter } from '../utils/orthogonalRouter'
 
@@ -54,6 +55,14 @@ let nodePens = computed(() => {
             y: 100,
             width: 270,
             height: 200,
+            events: [
+                {
+                    name: "click",
+                    action: EventAction.Emit,
+                    params: object.id,//传到代码块的参数
+                    value: "updateLines" //消息名
+                },
+            ],
         });
     }
     return pens;
@@ -95,9 +104,9 @@ let linePens = computed(() => {
             // ex: 200,
             // ey: 200,
             fromArrow: relationship.type,
-            autoPolyline: true,
-            autoFrom: true,
-            autoTo: true,
+            // autoPolyline: true,
+            // autoFrom: true,
+            // autoTo: true,
         });
     }
     return pens;
@@ -163,11 +172,13 @@ watch(
             // 添加图元
             meta2d_object.value.addPens(linePens.value);
             for (const relationship of newData.relationships) {
+
                 const fromIndex = nodePens.value.findIndex((pen) => pen.id === relationship.from);
                 const toIndex = nodePens.value.findIndex((pen) => pen.id === relationship.to);
-                const lineIndex = linePens.value.findIndex((pen) => pen.anchors[0].connectTo === relationship.from && pen.anchors[2].connectTo === relationship.to);
+                const lineIndex = linePens.value.findIndex((pen) => pen.anchors[0].connectTo === relationship.from && pen.anchors[pen.anchors.length - 1].connectTo === relationship.to);
                 connectLine(nodePens.value[fromIndex], nodePens.value[fromIndex].anchors[0], linePens.value[lineIndex], linePens.value[lineIndex].anchors[0]);
-                connectLine(nodePens.value[toIndex], nodePens.value[toIndex].anchors[0], linePens.value[lineIndex], linePens.value[lineIndex].anchors[2]);
+                const lengthOfPenAnchors = linePens.value[lineIndex].anchors.length;
+                connectLine(nodePens.value[toIndex], nodePens.value[toIndex].anchors[0], linePens.value[lineIndex], linePens.value[lineIndex].anchors[lengthOfPenAnchors - 1]);
 
 
 
@@ -179,7 +190,13 @@ watch(
                 const objectIndex = nodePens.value.findIndex((pen) => pen.id === object.id);
                 meta2d_object.value.canvas.updateLines(nodePens.value[objectIndex]);
             }
-            meta2d_object.value.render();
+
+            for (const relationship of newData.relationships) {
+                const lineIndex = linePens.value.findIndex((pen) => pen.anchors[0].connectTo === relationship.from && pen.anchors[pen.anchors.length - 1].connectTo === relationship.to);
+                meta2d_object.value.updateLineType(linePens.value[lineIndex], "orthogonalRouter");
+            }
+
+            // meta2d_object.value.render();
         }
     },
     { deep: true } // 深度观察 props.data 的变化
@@ -238,6 +255,22 @@ onMounted(() => {
         // 添加图元
         meta2d_object.value.addPens(pens);
         meta2d_object.value.render();
+
+        meta2d_object.value.on('updateLines', (e: Pen) => {
+            console.log(e);
+            console.log(e.connectedLines[0].lineId)
+            // const nodeIndex = nodePens.value.findIndex((pen) => pen.id === e.id);
+            // if (nodeIndex !== -1) {
+            //     meta2d_object.value.canvas.updateLines(nodePens.value[nodeIndex]);
+            // }
+
+            e.connectedLines.forEach((connectedLine) => {
+                const lineIndex = linePens.value.findIndex((pen) => pen.id === connectedLine.lineId);
+                if (lineIndex !== -1) {
+                    meta2d_object.value.updateLineType(linePens.value[lineIndex], "orthogonalRouter");
+                }
+            });
+        });
     }
 });
 onUnmounted(() => {
