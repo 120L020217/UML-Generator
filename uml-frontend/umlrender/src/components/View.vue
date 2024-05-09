@@ -23,17 +23,22 @@ import { sequencePens, sequencePensbyCtx } from '@meta2d/sequence-diagram';
 // import { chartsPens } from '@meta2d/le5le-charts';
 // import { ftaPens, ftaPensbyCtx, ftaAnchors } from '@meta2d/fta-diagram';
 
+// import { orthogonalRouter } from '../utils/orthogonalRouter'
+
 import { useSelection } from '../utils/selections';
 
 const { select } = useSelection();
 
 const meta2dOptions: any = {
+  // drawingLineName: 'orthogonalRouter',
   rule: true,
 };
 
 onMounted(() => {
   // 创建实例
   meta2d = new Meta2d('meta2d', meta2dOptions);
+
+  // meta2d.addDrawLineFn('orthogonalRouter', orthogonalRouter);
 
   // 按需注册图形库
   // 以下为自带基础图形库

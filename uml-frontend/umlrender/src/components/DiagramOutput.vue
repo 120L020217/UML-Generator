@@ -10,9 +10,11 @@ import {
     register,
     s8,
     connectLine,
+    Direction,
     registerAnchors,
     registerCanvasDraw,
 } from '@meta2d/core';
+import { orthogonalRouter } from '../utils/orthogonalRouter'
 
 import { classPens } from '@meta2d/class-diagram';
 const meta2dOptions: any = {
@@ -57,7 +59,7 @@ let nodePens = computed(() => {
     return pens;
 });
 let linePens = computed(() => {
-    const pens = [];
+    const pens: Pen[] = [];
     for (const relationship of props.data.relationships) {
         const fromIndex = nodePens.value.findIndex((pen) => pen.id === relationship.from);
         const toIndex = nodePens.value.findIndex((pen) => pen.id === relationship.to);
@@ -86,10 +88,12 @@ let linePens = computed(() => {
                     // anchorId: nodePens.value[toIndex].anchors[0].id,
                 },
             ],
-            x: 300, // 这里你可能需要根据实际情况来设置 x 和 y 的值
-            y: 100,
-            width: 100,
-            height: 100,
+            x: nodePens.value[fromIndex].x, // 这里你可能需要根据实际情况来设置 x 和 y 的值
+            y: nodePens.value[toIndex].y,
+            width: 10,
+            height: 10,
+            // ex: 200,
+            // ey: 200,
             fromArrow: relationship.type,
             autoPolyline: true,
             autoFrom: true,
@@ -164,13 +168,18 @@ watch(
                 const lineIndex = linePens.value.findIndex((pen) => pen.anchors[0].connectTo === relationship.from && pen.anchors[2].connectTo === relationship.to);
                 connectLine(nodePens.value[fromIndex], nodePens.value[fromIndex].anchors[0], linePens.value[lineIndex], linePens.value[lineIndex].anchors[0]);
                 connectLine(nodePens.value[toIndex], nodePens.value[toIndex].anchors[0], linePens.value[lineIndex], linePens.value[lineIndex].anchors[2]);
+
+
+
+                // meta2d_object.value.updateLineType(linePens.value[lineIndex], "orthogonalRouter");
             }
             // line.calculative.active = false;
+            // TODO:更新连线（可以写在论文中）
             for (const object of newData.objects) {
                 const objectIndex = nodePens.value.findIndex((pen) => pen.id === object.id);
                 meta2d_object.value.canvas.updateLines(nodePens.value[objectIndex]);
             }
-            // meta2d_object.value.render();
+            meta2d_object.value.render();
         }
     },
     { deep: true } // 深度观察 props.data 的变化
@@ -179,6 +188,8 @@ watch(
 onMounted(() => {
     // 创建实例
     meta2d_object.value = new Meta2d('meta2d_object', meta2dOptions);
+
+    meta2d_object.value.addDrawLineFn('orthogonalRouter', orthogonalRouter);
 
     // 按需注册图形库
     // 以下为自带基础图形库
