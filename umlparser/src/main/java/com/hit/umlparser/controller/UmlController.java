@@ -43,6 +43,10 @@ public class UmlController {
         List<UmlObject> objects = parser.parseObjects(umlCode);
         List<Relationship> relationships = parser.parseRelationships(umlCode, objects);
 
+        if (objects.isEmpty() && relationships.isEmpty()) {
+            throw new Exception("Both objects and relationships are empty");
+        }
+
         Map<String, Object> result = new HashMap<>();
         result.put("objects", objects);
         result.put("relationships", relationships);
