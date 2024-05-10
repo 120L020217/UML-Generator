@@ -1,0 +1,9 @@
+@startuml
+object firstObject:FirstClass {
+  Name = "Object1"
+}
+object secondObject:SecondClass {
+  Name = "Object2"
+}
+firstObject <|-- secondObject : extends
+@enduml
