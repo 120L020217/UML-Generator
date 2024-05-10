@@ -1,11 +1,11 @@
 <template>
     <div class="app-page">
         <div class="header">
-            <OdAction @submit="submitCode" />
+            <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" />
         </div>
         <div class="designer">
             <CodeInput v-model="umlCode" />
-            <DiagramOutput :data="diagramData" />
+            <DiagramOutput :data="diagramData" ref="diagramOutput" />
         </div>
     </div>
 </template>
@@ -16,19 +16,59 @@ import CodeInput from '../CodeInput.vue';
 import DiagramOutput from '../DiagramOutput.vue';
 import OdAction from '../OdAction.vue';
 import { parseUml } from '../../api/objects';  // 导入你之前封装的请求函数
+import { ElMessage } from 'element-plus';
 
 const umlCode = ref('');
 const diagramData = ref(null);
+const diagramOutput = ref(null);
 
 // Method to handle submitting code to backend
 const submitCode = async () => {
-    const response = await parseUml({ uml: umlCode.value });
-    console.log(response)
-    if (response.status === 200) {
-        diagramData.value = response.data;
-    } else {
-        // Handle error
+    try {
+        const response = await parseUml({ uml: umlCode.value });
+        console.log(response)
+        if (response.status === 200) {
+            diagramData.value = response.data;
+        } else {
+            ElMessage.error("代码语法有误");
+        }
+    } catch (error) {
+        console.error(error);
+        ElMessage.error("请求失败");
     }
+};
+
+const importFile = async () => {
+    const file = await selectFile();  // 假设这是一个打开文件选择对话框并返回用户选择的文件的函数
+    const content = await readFile(file);  // 假设这是一个读取文件内容的函数
+    umlCode.value = content;
+};
+const selectFile = () => {
+    return new Promise<File>((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.txt';
+        input.onchange = event => {
+            const file = (event.target as HTMLInputElement).files?.[0];
+            if (file) {
+                resolve(file);
+            } else {
+                reject(new Error('No file selected'));
+            }
+        };
+        input.click();
+    });
+};
+const readFile = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => resolve((event.target as FileReader).result as string);
+        reader.onerror = error => reject(error);
+        reader.readAsText(file);
+    });
+};
+const downloadPng = () => {
+    diagramOutput.value.downloadPng();
 };
 </script>
 

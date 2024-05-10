@@ -18,10 +18,22 @@ import {
 import { orthogonalRouter } from '../utils/orthogonalRouter'
 
 import { classPens } from '@meta2d/class-diagram';
+let meta2d_object = ref<Meta2d>();
+
+const downloadPng = () => {
+    let name = (meta2d_object.value.store.data as any).name;
+    if (name) {
+        name += '.png';
+    }
+    meta2d_object.value.downloadPng(name);
+};
+defineExpose({
+    downloadPng,
+});
+
 const meta2dOptions: any = {
     rule: true,
 };
-let meta2d_object = ref<Meta2d>();
 
 interface DataProp {
     objects: Array<{ id: string; name: string; type: string }>;
@@ -36,6 +48,10 @@ const props = withDefaults(defineProps<{ data: DataProp }>(), {
 
 let nodePens = computed(() => {
     const pens = [];
+    let xOffset = 100;
+    let yOffset = 100;
+    const gap = 300;  // The gap between each pen
+    let index = 0;
     for (const object of props.data.objects) {
         pens.push({
             id: object.id,
@@ -48,26 +64,30 @@ let nodePens = computed(() => {
             textTop: 10,
             list: [
                 {
-                    text: '-name: string\n+setName(name: string): void\n+getName(): string',
+                    text: '',
                 }
             ],
-            x: 100, // 这里你可能需要根据实际情况来设置 x 和 y 的值
-            y: 100,
+            x: xOffset + index * gap,  // Dynamically set x value
+            y: yOffset + index * gap,  // Dynamically set y value
             width: 270,
             height: 200,
             events: [
                 {
                     name: "click",
                     action: EventAction.Emit,
-                    params: object.id,//传到代码块的参数
-                    value: "updateLines" //消息名
+                    params: object.id,
+                    value: "updateLines"
                 },
             ],
         });
+        index++;
+
     }
     return pens;
 });
 let linePens = computed(() => {
+    meta2d_object.value.setBackgroundColor('#ffffff');
+
     const pens: Pen[] = [];
     for (const relationship of props.data.relationships) {
         const fromIndex = nodePens.value.findIndex((pen) => pen.id === relationship.from);
@@ -116,6 +136,7 @@ watch(
     () => props.data,
     (newData, oldData) => {
         if (newData && newData.objects && newData.relationships && meta2d_object.value) {
+            console.log('rerender');
             if (meta2d_object.value) {
                 meta2d_object.value.clear();
             }
@@ -196,7 +217,7 @@ watch(
                 meta2d_object.value.updateLineType(linePens.value[lineIndex], "orthogonalRouter");
             }
 
-            // meta2d_object.value.render();
+            meta2d_object.value.render();
         }
     },
     { deep: true } // 深度观察 props.data 的变化
@@ -207,7 +228,7 @@ onMounted(() => {
     meta2d_object.value = new Meta2d('meta2d_object', meta2dOptions);
 
     meta2d_object.value.addDrawLineFn('orthogonalRouter', orthogonalRouter);
-
+    meta2d_object.value.setBackgroundColor('#ffffff');
     // 按需注册图形库
     // 以下为自带基础图形库
     register(classPens());
@@ -217,40 +238,40 @@ onMounted(() => {
         const pens = [];
 
         // 将 objects 转换为图元
-        for (const object of props.data.objects) {
-            pens.push({
-                name: "rectangle",
-                // name: object.name,
-                text: object.type,
-                x: 100, // 这里你可能需要根据实际情况来设置 x 和 y 的值
-                y: 100,
-                width: 100,
-                height: 100,
-                lineWidth: 1,
-                // globalAlpha: 1, // 透明度
-            });
-        }
+        // for (const object of props.data.objects) {
+        //     pens.push({
+        //         name: "rectangle",
+        //         // name: object.name,
+        //         text: object.type,
+        //         x: 100, // 这里你可能需要根据实际情况来设置 x 和 y 的值
+        //         y: 100,
+        //         width: 100,
+        //         height: 100,
+        //         lineWidth: 1,
+        //         // globalAlpha: 1, // 透明度
+        //     });
+        // }
 
-        // 将 relationships 转换为图元
-        for (const relationship of props.data.relationships) {
-            pens.push({
-                type: 1,
-                name: "line",
-                // name: relationship.from,
-                // lineName: relationship.type,
-                lineName: "polyline",
-                // anchors: [
-                //     { x: 0.1, y: 0.1 },
-                //     { x: 0.1, y: 0.5 },
-                //     { x: 1, y: 1 },
-                // ],
-                x: 300, // 这里你可能需要根据实际情况来设置 x 和 y 的值
-                y: 100,
-                width: 100,
-                height: 100,
-                // globalAlpha: 1, // 透明度
-            });
-        }
+        // // 将 relationships 转换为图元
+        // for (const relationship of props.data.relationships) {
+        //     pens.push({
+        //         type: 1,
+        //         name: "line",
+        //         // name: relationship.from,
+        //         // lineName: relationship.type,
+        //         lineName: "polyline",
+        //         // anchors: [
+        //         //     { x: 0.1, y: 0.1 },
+        //         //     { x: 0.1, y: 0.5 },
+        //         //     { x: 1, y: 1 },
+        //         // ],
+        //         x: 300, // 这里你可能需要根据实际情况来设置 x 和 y 的值
+        //         y: 100,
+        //         width: 100,
+        //         height: 100,
+        //         // globalAlpha: 1, // 透明度
+        //     });
+        // }
 
         // 添加图元
         meta2d_object.value.addPens(pens);
@@ -270,6 +291,7 @@ onMounted(() => {
                     meta2d_object.value.updateLineType(linePens.value[lineIndex], "orthogonalRouter");
                 }
             });
+            meta2d_object.value.render();
         });
     }
 });
