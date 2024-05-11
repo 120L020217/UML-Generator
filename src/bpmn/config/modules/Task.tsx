@@ -6,7 +6,7 @@ import {
   getElementTypeListenerProperties,
 } from '../common';
 import { GroupProperties } from '../index';
-import PrefixLabelSelect from '@/components/prefix-label-select';
+import PrefixLabelSelect from '../../../components/prefix-label-select';
 import { ElInput, ElOption } from 'element-plus';
 import { ModdleElement } from '../../type';
 import { BpmnStore } from '../../store';

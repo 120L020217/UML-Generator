@@ -2,7 +2,7 @@ import { defineComponent, PropType, toRaw, watch, ref } from 'vue';
 import ScriptHelper, { resolve } from '../../utils/script-helper';
 import { FieldDefine } from './index';
 import DataBinder from './DataBinder';
-import { PropertiesMap } from '@/bpmn/config';
+import { PropertiesMap } from '../../bpmn/config';
 
 /**
  * 动态绑定组件

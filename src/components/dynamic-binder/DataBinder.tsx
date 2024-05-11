@@ -1,5 +1,5 @@
 import { defineComponent, PropType, watch, toRaw, ref } from 'vue';
-import { FieldDefine } from '@/components/dynamic-binder/index';
+import { FieldDefine } from '../../components/dynamic-binder/index';
 
 export default defineComponent({
   name: 'DataBinder',

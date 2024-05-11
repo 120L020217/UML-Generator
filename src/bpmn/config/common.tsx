@@ -1,8 +1,8 @@
 import { ElFormItem, ElInput, ElOption, ElSelect } from 'element-plus';
-import { FieldDefine } from '@/components/dynamic-binder';
+import { FieldDefine } from '../../components/dynamic-binder';
 import { PropertiesMap, GroupProperties } from './index';
 import SubList from '../../components/sublist/SubList';
-import { SubListState } from '@/components/sublist/type';
+import { SubListState } from '../../components/sublist/type';
 import { ModdleElement } from '../type';
 import { BpmnStore } from '../store';
 
@@ -187,17 +187,17 @@ export const getElementTypeListenerProperties = function (options: {
 
           return listeners
             ? listeners?.map((item: ModdleElement) => {
-                const type = item.expression
-                  ? 'expression'
-                  : item.delegateExpression
+              const type = item.expression
+                ? 'expression'
+                : item.delegateExpression
                   ? 'delegateExpression'
                   : 'class';
-                return {
-                  event: item.event,
-                  type: type,
-                  content: item[type],
-                };
-              })
+              return {
+                event: item.event,
+                type: type,
+                content: item[type],
+              };
+            })
             : [];
         },
         setValue(businessObject: ModdleElement, key: string, value: []): void {
@@ -258,9 +258,9 @@ export const ExtensionGroupProperties: GroupProperties = {
         )[0]?.values;
         return extProperties
           ? extProperties.map((item: PropertyElement) => ({
-              name: item.name,
-              value: item.value,
-            }))
+            name: item.name,
+            value: item.value,
+          }))
           : [];
       },
       setValue(businessObject: ModdleElement, key: string, value: []): void {
@@ -332,8 +332,8 @@ export const FormGroupProperties: GroupProperties = {
         );
         return formProperties
           ? formProperties.map((elem: FromPropertyElement) => {
-              return { id: elem?.id, type: elem.type, name: elem?.$attrs?.name };
-            })
+            return { id: elem?.id, type: elem.type, name: elem?.$attrs?.name };
+          })
           : [];
       },
       setValue(businessObject: ModdleElement, key: string, value: []): void {

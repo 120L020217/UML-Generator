@@ -7,6 +7,6 @@
     "allowSyntheticDefaultImports": true,
   },
   "exclude": [
-    "vite.config.js"
+    "vite.config.ts"
   ]
 }

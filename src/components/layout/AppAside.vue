@@ -9,7 +9,7 @@ console.log("test")
         <el-scrollbar>
             <el-menu router unique-opened :collapse="isCollapse">
                 <a href="/" class="logo">
-                    <img src="@/assets/logo.svg" alt="" />
+                    <img src="../../assets/logo.svg" alt="" />
                     <h1 v-if="!isCollapse"> 毕业设计 </h1>
                 </a>
                 <el-sub-menu index="1">
