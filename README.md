@@ -28,4 +28,4 @@ npm run dev
 npm run build
 ```
 
-使用三种组件库：elementplus、tdesign-vue-next、meta2d
+使用三种组件库：elementplus、meta2d、bpmnjs
