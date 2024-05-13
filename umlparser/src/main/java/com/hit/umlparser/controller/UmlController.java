@@ -17,10 +17,9 @@ import java.util.Map;
  * @date: 2024-03-05 13:55
  */
 @RestController
-@RequestMapping("/api")
 public class UmlController {
     @CrossOrigin
-    @PostMapping("/parse-uml")
+    @PostMapping("/api/parse-uml")
     public ResponseEntity<Object> parseUml(@RequestBody Map<String, String> payload) {
         String umlCode = payload.get("uml");
         System.out.println(umlCode);
