@@ -35,3 +35,12 @@ export const parseUml = async (uml: Uml) => {
     });
     return response;
 }
+
+export const saveHistory = async (payload: FormData) => {
+    const response = await request({
+        method: "POST",
+        url: "/api/set-history",
+        data: payload,
+    });
+    return response;
+}

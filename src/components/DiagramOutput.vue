@@ -16,7 +16,8 @@ import {
     EventAction,
 } from '@meta2d/core';
 import { orthogonalRouter } from '../utils/orthogonalRouter'
-
+import { saveHistory } from '../api/objects';
+import { ElMessage } from 'element-plus';
 import { classPens } from '@meta2d/class-diagram';
 let meta2d_object = ref<Meta2d>();
 
@@ -27,6 +28,31 @@ const downloadPng = () => {
     }
     meta2d_object.value.downloadPng(name);
 };
+
+const setHistory = async (text: string) => {
+    // Save history data to local storage
+    console.log('Save history data:', text);
+    const jsonData = meta2d_object.value.data();
+    const json = JSON.stringify(jsonData);
+    const file = new Blob([json], { type: 'application/json' });
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('text', text);
+
+    try {
+        const response = await saveHistory(formData);
+        if (response.status >= 200 && response.status < 300) {
+            ElMessage.success("保存成功");
+        } else {
+            ElMessage.error("保存失败");
+        }
+    } catch (error) {
+        console.error(error);
+        ElMessage.error("请求失败");
+    }
+};
+
 defineExpose({
     downloadPng,
 });
@@ -40,10 +66,11 @@ interface DataProp {
     relationships: Array<{ from: string; type: string; to: string; }>;
 }
 
-const props = withDefaults(defineProps<{ data: DataProp }>(), {
+const props = withDefaults(defineProps<{ data: DataProp, text: string }>(), {
     data() {
         return { objects: [], relationships: [] };
     },
+    text: '',
 });
 
 let nodePens = computed(() => {
@@ -221,6 +248,16 @@ watch(
         }
     },
     { deep: true } // 深度观察 props.data 的变化
+);
+
+watch(
+    () => props.text,
+    async (newText) => {
+        if (newText) {
+            // 发起后端请求
+            const response = await setHistory(newText);
+        }
+    }
 );
 
 onMounted(() => {

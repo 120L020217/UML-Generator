@@ -1,11 +1,11 @@
 <template>
     <div class="app-page">
         <div class="header">
-            <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" />
+            <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" @saveHistory="setHistory" />
         </div>
         <div class="designer">
             <CodeInput v-model="umlCode" />
-            <DiagramOutput :data="diagramData" ref="diagramOutput" />
+            <DiagramOutput :data="diagramData" :text="picId" ref="diagramOutput" />
         </div>
     </div>
 </template>
@@ -21,12 +21,13 @@ import { ElMessage } from 'element-plus';
 const umlCode = ref('');
 const diagramData = ref(null);
 const diagramOutput = ref(null);
+const picId = ref('');
 
 // Method to handle submitting code to backend
 const submitCode = async () => {
     try {
         const response = await parseUml({ uml: umlCode.value });
-        console.log(response)
+        // console.log(response)
         if (response.status === 200) {
             diagramData.value = response.data;
         } else {
@@ -68,7 +69,19 @@ const readFile = (file: File) => {
     });
 };
 const downloadPng = () => {
+    // console.log('Download PNG'); 
     diagramOutput.value.downloadPng();
+};
+
+const setHistory = (text: string) => {
+    // Call your API to save history data
+    console.log('Set history data:', text);
+    picId.value = text;
+};
+
+const getHistory = () => {
+    // Call your API to get history data
+    console.log('Get history data');
 };
 </script>
 
