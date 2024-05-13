@@ -1,7 +1,8 @@
 <template>
     <div class="app-page">
         <div class="header">
-            <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" @saveHistory="setHistory" />
+            <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" @saveHistory="setHistory"
+                @history="getHistory" />
         </div>
         <div class="designer">
             <CodeInput v-model="umlCode" />

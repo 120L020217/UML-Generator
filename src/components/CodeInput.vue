@@ -1,6 +1,7 @@
 <template>
     <div class="code-input-container">
-        <el-input type="textarea" v-model="code" :rows="10" placeholder="请输入代码..." class="code-input"></el-input>
+        <el-input type="textarea" v-model="code" :rows="10" placeholder="请输入代码..." class="code-input"
+            autosize></el-input>
         <el-button type="primary" @click="submitCode" class="submit-button">提交代码</el-button>
     </div>
 </template>

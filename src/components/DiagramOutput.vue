@@ -19,6 +19,8 @@ import { orthogonalRouter } from '../utils/orthogonalRouter'
 import { saveHistory } from '../api/objects';
 import { ElMessage } from 'element-plus';
 import { classPens } from '@meta2d/class-diagram';
+import { parse, stringify } from 'flatted';
+
 let meta2d_object = ref<Meta2d>();
 
 const downloadPng = () => {
@@ -33,12 +35,16 @@ const setHistory = async (text: string) => {
     // Save history data to local storage
     console.log('Save history data:', text);
     const jsonData = meta2d_object.value.data();
-    const json = JSON.stringify(jsonData);
+    const json = stringify(jsonData);
     const file = new Blob([json], { type: 'application/json' });
+    const jsonData_pic = meta2d_object.value;
+    const json_pic = stringify(jsonData_pic);
+    const file_pic = new Blob([json_pic], { type: 'application/json' });
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('text', text);
+    formData.append('file_pic', file_pic);
 
     try {
         const response = await saveHistory(formData);

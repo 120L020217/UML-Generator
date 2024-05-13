@@ -10,8 +10,8 @@
             <template #reference>
                 <el-button style="margin-right: 16px">保存历史</el-button>
             </template>
-            <el-input v-model="text" style="width: 240px" maxlength="10" placeholder="Please input" show-word-limit
-                type="text" />
+            <el-input v-model="text" style="width: 240px" maxlength="10" placeholder="Please input diagram name"
+                show-word-limit type="text" />
             <el-button type="primary" @click="save" style="margin-left: 20px;">保存</el-button>
         </el-popover>
     </div>
