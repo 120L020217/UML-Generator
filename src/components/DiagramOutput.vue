@@ -278,8 +278,8 @@ onMounted(() => {
         meta2d_object.value.render();
 
         meta2d_object.value.on('updateLines', (e: Pen) => {
-            console.log(e);
-            console.log(e.connectedLines[0].lineId)
+            // console.log(e);
+            // console.log(e.connectedLines[0].lineId)
             // const nodeIndex = nodePens.value.findIndex((pen) => pen.id === e.id);
             // if (nodeIndex !== -1) {
             //     meta2d_object.value.canvas.updateLines(nodePens.value[nodeIndex]);

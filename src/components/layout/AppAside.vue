@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { isCollapse } from './isCollapse'
 
-console.log("test")
+// console.log("test")
 </script>
 
 <template>

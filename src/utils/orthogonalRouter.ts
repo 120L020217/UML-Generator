@@ -1,13 +1,13 @@
 import { Direction } from "@meta2d/core";
 export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, linkView: import("@meta2d/core").Pen, mouseDown: import("@meta2d/core").Point) {
     console.log("orthogonalRouter");
-    console.log(linkView);
+    // console.log(linkView);
     var sourceBBox = store.pens[linkView.anchors[0].connectTo];
     var targetBBox = store.pens[linkView.anchors[linkView.anchors.length - 1].connectTo];
-    console.log(sourceBBox, targetBBox);
+    // console.log(sourceBBox, targetBBox);
     var sourcePoint = linkView.anchors[0];
     var targetPoint = linkView.anchors[linkView.anchors.length - 1];
-    console.log(sourcePoint, targetPoint);
+    // console.log(sourcePoint, targetPoint);
 
     const { x: tx0, y: ty0 } = targetBBox;
     const { x: sx0, y: sy0 } = sourceBBox;
@@ -24,8 +24,8 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     // const sourceOutsidePoint = sourcePoint.clone();
     const spacing = 28;
     let sourceSide;
-    console.log(sourceBBox.x, sourceBBox.y);
-    console.log(sourceCoordinates.x, sourceCoordinates.y);
+    // console.log(sourceBBox.x, sourceBBox.y);
+    // console.log(sourceCoordinates.x, sourceCoordinates.y);
 
     if (sourceCoordinates.x >= sourceBBox.x + 125 && sourceCoordinates.x <= sourceBBox.x + 145
         && sourceCoordinates.y >= sourceBBox.y - 10 && sourceCoordinates.y <= sourceBBox.y + 10) {
@@ -44,7 +44,7 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     else {
         sourceSide = Direction.Up;
     }
-    console.log(sourceSide);
+    // console.log(sourceSide);
 
     // const sourceSide = sourcePoint.direction;
     switch (sourceSide) {
@@ -63,8 +63,8 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     }
     // const targetOutsidePoint = targetPoint.clone();
     let targetSide;
-    console.log(targetBBox.x, targetBBox.y);
-    console.log(targetCoordinates.x, targetCoordinates.y);
+    // console.log(targetBBox.x, targetBBox.y);
+    // console.log(targetCoordinates.x, targetCoordinates.y);
     if (targetCoordinates.x >= targetBBox.x + 125 && targetCoordinates.x <= targetBBox.x + 145
         && targetCoordinates.y >= targetBBox.y - 10 && targetCoordinates.y <= targetBBox.y + 10) {
         targetSide = Direction.Up;
@@ -78,7 +78,7 @@ export function orthogonalRouter(store: import("@meta2d/core").Meta2dStore, link
     else {
         targetSide = Direction.Up;
     }
-    console.log(targetSide);
+    // console.log(targetSide);
 
     switch (targetSide) {
         case Direction.Left:
