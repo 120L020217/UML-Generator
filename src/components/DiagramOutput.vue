@@ -35,11 +35,10 @@ const setHistory = async (text: string) => {
     // Save history data to local storage
     console.log('Save history data:', text);
     const jsonData = meta2d_object.value.data();
-    const json = stringify(jsonData);
+    const json = JSON.stringify(jsonData);
     const file = new Blob([json], { type: 'application/json' });
-    const jsonData_pic = meta2d_object.value;
-    const json_pic = stringify(jsonData_pic);
-    const file_pic = new Blob([json_pic], { type: 'application/json' });
+    const file_pic = meta2d_object.value.toPng();
+    console.log(file_pic);
 
     const formData = new FormData();
     formData.append('file', file);
@@ -72,11 +71,12 @@ interface DataProp {
     relationships: Array<{ from: string; type: string; to: string; }>;
 }
 
-const props = withDefaults(defineProps<{ data: DataProp, text: string }>(), {
+const props = withDefaults(defineProps<{ data: DataProp, text: string, restoreData: string }>(), {
     data() {
         return { objects: [], relationships: [] };
     },
     text: '',
+    restoreData: '',
 });
 
 let nodePens = computed(() => {
@@ -262,6 +262,21 @@ watch(
         if (newText) {
             // 发起后端请求
             const response = await setHistory(newText);
+        }
+    }
+);
+
+watch(
+    () => props.restoreData,
+    (newData) => {
+        if (newData) {
+            const jsonData = JSON.parse(newData);
+            console.log(jsonData);
+            meta2d_object.value.clear();
+            // console.log(jsonData.objects);
+            meta2d_object.value.addPens(jsonData.pens);
+            // meta2d_object.value.addPens(jsonData.relationships);
+            meta2d_object.value.render();
         }
     }
 );

@@ -44,3 +44,17 @@ export const saveHistory = async (payload: FormData) => {
     });
     return response;
 }
+
+export interface History {
+    text: string;
+    jsonData: string;
+    jsonData_pic: string;
+}
+
+export const getAllHistory = async () => {
+    const response = await request<History[]>({
+        method: "GET",
+        url: "/api/get-history",
+    });
+    return response;
+}

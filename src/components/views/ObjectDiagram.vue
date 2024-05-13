@@ -2,11 +2,11 @@
     <div class="app-page">
         <div class="header">
             <OdAction @submit="submitCode" @import="importFile" @export="downloadPng" @saveHistory="setHistory"
-                @history="getHistory" />
+                @loadHistory="restoreHistory" />
         </div>
         <div class="designer">
             <CodeInput v-model="umlCode" />
-            <DiagramOutput :data="diagramData" :text="picId" ref="diagramOutput" />
+            <DiagramOutput :data="diagramData" :text="picId" :restoreData="picData" ref="diagramOutput" />
         </div>
     </div>
 </template>
@@ -23,6 +23,7 @@ const umlCode = ref('');
 const diagramData = ref(null);
 const diagramOutput = ref(null);
 const picId = ref('');
+const picData = ref('');
 
 // Method to handle submitting code to backend
 const submitCode = async () => {
@@ -80,10 +81,12 @@ const setHistory = (text: string) => {
     picId.value = text;
 };
 
-const getHistory = () => {
+const restoreHistory = (jsonData: string) => {
     // Call your API to get history data
-    console.log('Get history data');
+    console.log('Restore history data:', jsonData);
+    picData.value = jsonData;
 };
+
 </script>
 
 <style scoped>
