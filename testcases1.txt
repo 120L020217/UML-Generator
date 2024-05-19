@@ -14,29 +14,10 @@ object object4:Class4 {
 object object5:Class5 {
   Name = "Object5"
 }
-object object6:Class6 {
-  Name = "Object6"
-}
-object object7:Class7 {
-  Name = "Object7"
-}
-object object8:Class8 {
-  Name = "Object8"
-}
-object object9:Class9 {
-  Name = "Object9"
-}
-object object10:Class10 {
-  Name = "Object10"
-}
 
-object1 <|-- object2 : extends
-object2 *-- object4 : extends
-object3 o-- object4 : extends
-object4 *-- object5 : extends
-object5 <|-- object6 : extends
-object5 <|-- object7 : extends
-object7 *-- object5 : extends
-object8 o-- object1 : extends
-object9 <|-- object10 : extends
+object1 <|-- object2
+object1 *-- object3
+object1 o-- object4
+object1 *-- object5
+
 @enduml

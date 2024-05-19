@@ -1,0 +1,15 @@
+@startuml
+class Car {
+  +String licensePlate
+  -int speed
+  +void accelerate(int)
+  +void brake()
+}
+
+class Driver {
+  +String name
+  +void drive(Car)
+}
+
+Driver -right-> Car : drives >
+@enduml

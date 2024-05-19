@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <h1>默认主页</h1>
+    <img src="D:\bpmn\umlrender\第三章-横板.drawio.png" style="width: 800px;">
 </template>
 
 <style lang="scss" scoped></style>
